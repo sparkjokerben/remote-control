@@ -207,7 +207,7 @@ WebUI 反向代理：`GET /dsh/:nodeId` → `302 /dsh/:nodeId/`；`/dsh/:nodeId/
 插件目录（公开 `:8080`）：
 
 - `GET /api/v1/plugin-catalog`：`{code:0,data:[PluginItem]}`。
-- `GET /api/v1/plugin-catalog/index.json`：裸 `dsh` Custom Plugin Index（`format:1,title,plugins:[{name,title,description,icon,author,homepage,repository,metadata,versions:[{version,publishTimestamp,source,engines}]}]`），`source` 仅 `npm` 或 `git`。
+- `GET /api/v1/plugin-catalog/index.json`：裸 `dsh` Custom Plugin Index（`format:1,title,plugins:[{name,title,description,icon,author,homepage,repository,metadata,versions:[{version,publishTimestamp,source,engines}]}]`）。`publishTimestamp` 为 Unix 秒整数；`source` 必须是对象：npm 为 `{type:'npm',registry?}`，git 为 `{type:'git',url,commit,path?}`（`url` 必须 https，`commit` 为 40 位 SHA）。
 - 管理 `:8081`：`GET/POST /api/v1/admin/plugin-catalog`、`PUT/DELETE /api/v1/admin/plugin-catalog/:id`（禁止使用 `retired_routes_test.go` 中断言 404 的 `/api/v1/admin/plugins`）。
 
 ## 6. 插件行为

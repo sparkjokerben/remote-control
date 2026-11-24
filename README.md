@@ -7,10 +7,20 @@ DeepSeek Harness (`dsh`) 远程控制插件：把本机 `dsh` 与微信小程序
 
 ## 安装
 
+推荐使用 GitHub Release 的预构建离线包：
+
 ```sh
-dsh plugin --profile web add @gooftoken/remote-control
-dsh plugin --profile web add ./remote-control.tgz   # 离线包
+dsh plugin --profile web add ./remote-control.tgz
 ```
+
+从 git 源安装时会在安装阶段执行 `prepare` 构建，需要在 profile 的 `pnpm-workspace.yaml` 中允许该包运行构建脚本：
+
+```yaml
+allowBuilds:
+  '@gooftoken/remote-control': true
+```
+
+发布到 npm 后也可直接 `dsh plugin --profile web add @gooftoken/remote-control`。
 
 ## 使用
 

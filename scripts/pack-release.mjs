@@ -30,12 +30,22 @@ for (const file of ['lib/index.js', 'lib/client.cjs', 'lib/index.d.ts', 'lib/cli
 rmSync(releaseDir, { recursive: true, force: true })
 mkdirSync(releaseDir, { recursive: true })
 
-const output = execFileSync('npm', ['pack', '--pack-destination', releaseDir, '--json'], {
-  cwd: packageDir,
-  encoding: 'utf8',
-  stdio: ['ignore', 'pipe', 'inherit'],
-})
-const parsed = JSON.parse(output)
+const output = execFileSync(
+  'npm',
+  ['pack', '--ignore-scripts', '--pack-destination', releaseDir, '--json'],
+  {
+    cwd: packageDir,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'inherit'],
+  },
+)
+// prepare 或 npm notice 可能混入 stdout，从首个 JSON 分隔符开始解析。
+const jsonStart = output.search(/[[{]/)
+if (jsonStart < 0) {
+  console.error(`npm pack 未返回 JSON：${output}`)
+  process.exit(1)
+}
+const parsed = JSON.parse(output.slice(jsonStart))
 const packed = Array.isArray(parsed) ? parsed[0] : Object.values(parsed)[0]
 if (!packed?.filename) {
   console.error('npm pack 未返回产物文件名')

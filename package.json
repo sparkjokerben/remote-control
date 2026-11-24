@@ -60,6 +60,7 @@
   ],
   "scripts": {
     "build": "tsdown",
+    "prepare": "pnpm run build",
     "pack:release": "node ./scripts/pack-release.mjs",
     "test:dist": "node ./scripts/smoke-client-entry.mjs",
     "typecheck": "tsc --noEmit --pretty false",
