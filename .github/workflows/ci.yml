@@ -17,7 +17,9 @@ jobs:
         with:
           node-version: '24'
       - name: Setup pnpm
-        run: corepack prepare pnpm@12.16.1 --activate
+        run: |
+          corepack enable
+          corepack prepare pnpm@12.16.1 --activate
       - name: Install
         run: pnpm install --no-frozen-lockfile
       - name: Typecheck

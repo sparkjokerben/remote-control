@@ -21,7 +21,9 @@ jobs:
         with:
           node-version: '24'
       - name: Setup pnpm
-        run: corepack prepare pnpm@12.16.1 --activate
+        run: |
+          corepack enable
+          corepack prepare pnpm@12.16.1 --activate
       - name: Install
         run: pnpm install --no-frozen-lockfile
       - name: Verify
@@ -33,10 +35,13 @@ jobs:
       - name: Resolve version
         id: version
         run: echo "value=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
-      - name: Check existing tag
+      - name: Check existing release
         id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if git rev-parse "v${{ steps.version.outputs.value }}" >/dev/null 2>&1; then
+          tag="v${{ steps.version.outputs.value }}"
+          if gh release view "$tag" >/dev/null 2>&1 || git ls-remote --tags origin "refs/tags/$tag" | grep -q .; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
