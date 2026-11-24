@@ -1,0 +1,11 @@
+# awesome-dsh-plugin 提交模板（data/plugins/<owner>__<repo>.yml）。
+# 提交前必须：public 仓库存在且满 1 天、GitHub topic 含 dsh-plugin、
+# GitHub Release 上传无版本号 remote-control.tgz、截图放在 package.json 同级。
+url: https://github.com/sparkjokerben/remote-control
+name: sparkjokerben/remote-control
+category: remote
+description:
+  en: Dual-mode remote control for DeepSeek Harness with end-to-end encrypted sessions and full WebUI tunneling to WeChat Mini Programs.
+  zh: 面向 DeepSeek Harness 的双形态远程控制，支持端到端加密会话与小程序 WebUI 反向隧道。
+icon: https://raw.githubusercontent.com/sparkjokerben/remote-control/main/assets/icon-180.png
+tarball: https://github.com/sparkjokerben/remote-control/releases/latest/download/remote-control.tgz

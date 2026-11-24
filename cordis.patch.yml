@@ -1,0 +1,6 @@
+- insert:
+    - id: remote-control
+      name: '@gooftoken/remote-control'
+      disabled: false
+      config:
+        enabled: true

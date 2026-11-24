@@ -1,0 +1,56 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Setup pnpm
+        run: corepack prepare pnpm@12.16.1 --activate
+      - name: Install
+        run: pnpm install --no-frozen-lockfile
+      - name: Verify
+        run: |
+          pnpm run typecheck
+          pnpm run test:run
+          pnpm run build
+          pnpm run test:dist
+      - name: Resolve version
+        id: version
+        run: echo "value=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Check existing tag
+        id: check
+        run: |
+          if git rev-parse "v${{ steps.version.outputs.value }}" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Pack release artifact
+        if: steps.check.outputs.exists == 'false'
+        run: pnpm run pack:release
+      - name: Create GitHub Release
+        if: steps.check.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${{ steps.version.outputs.value }}" \
+            release/remote-control.tgz \
+            --title "v${{ steps.version.outputs.value }}" \
+            --notes "Automated release for @gooftoken/remote-control ${{ steps.version.outputs.value }}." \
+            --target "$GITHUB_SHA"
